@@ -1,0 +1,33 @@
+function vigenereCipherEncrypt(plainText, keyword):
+    cipherText = ""
+    keywordIndex = 0
+    for each character in plainText:
+        if character is a letter:
+            shift = (position of keyword[keywordIndex] in the alphabet) mod 26
+            if character is uppercase:
+                encryptedChar = (character + shift - 'A') mod 26 + 'A'
+            else:
+                encryptedChar = (character + shift - 'a') mod 26 + 'a'
+            keywordIndex = (keywordIndex + 1) mod length(keyword)
+        else:
+            encryptedChar = character
+        cipherText += encryptedChar
+    return cipherText
+
+============================================================
+
+function vigenereCipherDecrypt(cipherText, keyword):
+    plainText = ""
+    keywordLength = length(keyword)
+    for i from 0 to length(cipherText) - 1:
+        char = cipherText[i]
+        if char is a letter:
+            shift = keyword[i mod keywordLength]
+            if char is uppercase:
+                decryptedChar = (char - shift + 26) mod 26 + 'A'
+            else:
+                decryptedChar = (char - shift + 26) mod 26 + 'a'
+        else:
+            decryptedChar = char
+        plainText += decryptedChar
+    return plainText

@@ -1,0 +1,27 @@
+// Alice's side
+private keyA = generateRandomNumber()
+publicKeyA = calculatePublicKey(privateKeyA)
+
+// Bob's side
+private keyB = generateRandomNumber()
+publicKeyB = calculatePublicKey(privateKeyB)
+
+// Shared Secret Calculation
+sharedSecretA = calculateSharedSecret(publicKeyB, privateKeyA)
+sharedSecretB = calculateSharedSecret(publicKeyA, privateKeyB)
+
+// Function to calculate public key
+function calculatePublicKey(privateKey):
+    return (base ^ privateKey) % prime
+
+// Function to calculate shared secret
+function calculateSharedSecret(publicKey, privateKey):
+    return (publicKey ^ privateKey) % prime
+
+==============================================================
+
+function diffieHellmanDecrypt(sharedSecret, receivedMessage):
+    decryptedMessage = receivedMessage XOR sharedSecret
+    return decryptedMessage
+
+XOR denotes the bitwise XOR operation, which is commonly used for encryption and decryption in Diffie-Hellman.

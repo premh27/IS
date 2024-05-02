@@ -1,0 +1,30 @@
+function playfairEncrypt(plainText, key):
+    prepareKey(key)
+    preparePlainText(plainText)
+    cipherText = ""
+
+    for each pair of plaintext characters:
+        find position of each character in the key square
+        if both characters are in the same row:
+            take characters to the right, wrapping around if needed
+        else if both characters are in the same column:
+            take characters below, wrapping around if needed
+        else:
+            form a rectangle and take the characters in the opposite corners
+
+        add resulting characters to the ciphertext
+
+    return cipherText
+
+===================================================================
+
+function playfairDecrypt(cipherText, key):
+    keyMatrix = generateKeyMatrix(key)
+    pairs = splitCipherTextIntoPairs(cipherText)
+    plainText = ""
+
+    for each pair in pairs:
+        decryptedPair = decryptPair(pair, keyMatrix)
+        plainText += decryptedPair
+
+    return plainText

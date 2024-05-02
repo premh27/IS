@@ -1,0 +1,40 @@
+function railFenceEncrypt(plainText, rails):
+    fence = createEmptyFence(rails)
+    direction = "down"
+    row = 0
+    
+    for each character in plainText:
+        fence[row] += character
+        
+        if direction is "down":
+            row += 1
+        else:
+            row -= 1
+        
+        if row == rails - 1:
+            direction = "up"
+        elseif row == 0:
+            direction = "down"
+    
+    cipherText = concatenateRows(fence)
+    return cipherText
+
+=======================================================================================
+
+function railFenceDecrypt(cipherText, rails):
+    fence = createFence(length(cipherText), rails)
+    index = 0
+    for rail in range(rails):
+        for position in range(length(cipherText)):
+            if fence[rail][position] != '-':
+                fence[rail][position] = cipherText[index]
+                index += 1
+    plainText = ""
+    direction = 1
+    currentRow = 0
+    for position in range(length(cipherText)):
+        plainText += fence[currentRow][position]
+        currentRow += direction
+        if currentRow == 0 or currentRow == rails - 1:
+            direction = -direction
+    return plainText

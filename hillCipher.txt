@@ -1,0 +1,21 @@
+function hillCipherEncrypt(plainText, keyMatrix):
+    Convert plainText to numerical values
+    Pad the plainText if necessary to make its length a multiple of the keyMatrix size
+    Divide the plainText into blocks of size equal to the keyMatrix size
+    for each block:
+        Multiply the block by the keyMatrix
+        Convert the resulting numerical values back to characters
+    Combine the encrypted blocks into a single string
+    return the encrypted text
+
+=========================================================================
+
+function hillCipherDecrypt(cipherText, keyMatrix):
+    blockSize = size of keyMatrix
+    plainText = ""
+    for each block in cipherText:
+        cipherBlock = convert block to matrix
+        inverseKeyMatrix = calculate inverse of keyMatrix
+        plainBlock = multiply inverseKeyMatrix by cipherBlock
+        plainText += convert plainBlock to characters
+    return plainText

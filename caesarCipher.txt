@@ -1,0 +1,27 @@
+function caesarCipherEncrypt(plainText, shift):
+    cipherText = ""
+    for each character in plainText:
+        if character is a letter:
+            if character is uppercase:
+                encryptedChar = (character + shift - 'A') mod 26 + 'A'
+            else:
+                encryptedChar = (character + shift - 'a') mod 26 + 'a'
+        else:
+            encryptedChar = character
+        cipherText += encryptedChar
+    return cipherText
+
+====================================================================
+
+function caesarCipherDecrypt(cipherText, shift):
+    plainText = ""
+    for each character in cipherText:
+        if character is a letter:
+            if character is uppercase:
+                decryptedChar = (character - shift - 'A' + 26) mod 26 + 'A'
+            else:
+                decryptedChar = (character - shift - 'a' + 26) mod 26 + 'a'
+        else:
+            decryptedChar = character
+        plainText += decryptedChar
+    return plainText
