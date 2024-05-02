@@ -1,0 +1,332 @@
+1.Caesar Cipher:
+def caesar_cipher_encrypt(text, shift):
+    encrypted_text = ""
+    for char in text:
+        if char.isalpha():
+            shifted = ord(char) + shift
+            if char.islower():
+                if shifted > ord('z'):
+                    shifted -= 26
+            elif char.isupper():
+                if shifted > ord('Z'):
+                    shifted -= 26
+            encrypted_text += chr(shifted)
+        else:
+            encrypted_text += char
+    return encrypted_text
+
+def caesar_cipher_decrypt(text, shift):
+    return caesar_cipher_encrypt(text, -shift)
+
+# Example usage:
+plaintext = "Hello, World!"
+shift = 3
+encrypted_text = caesar_cipher_encrypt(plaintext, shift)
+print("Encrypted text:", encrypted_text)
+decrypted_text = caesar_cipher_decrypt(encrypted_text, shift)
+print("Decrypted text:", decrypted_text)
+
+
+2.Rail Fence Cipher:
+def rail_fence_encrypt(text, rails):
+    fence = [[] for _ in range(rails)]
+    rail = 0
+    direction = 1
+
+    for char in text:
+        fence[rail].append(char)
+        rail += direction
+        if rail == rails or rail == -1:
+            direction *= -1
+            rail += 2 * direction
+
+    encrypted_text = ''.join(''.join(rail) for rail in fence)
+    return encrypted_text
+
+def rail_fence_decrypt(text, rails):
+    fence = [[] for _ in range(rails)]
+    rail = 0
+    direction = 1
+
+    for char in text:
+        fence[rail].append(None)
+        rail += direction
+        if rail == rails or rail == -1:
+            direction *= -1
+            rail += 2 * direction
+
+    index = 0
+    for rail in range(rails):
+        for _ in range(len(fence[rail])):
+            fence[rail][_]=text[index]
+            index+=1
+    rail=0
+    direction=1
+    decrypted_text = ''
+    for _ in range(len(text)):
+        decrypted_text+=fence[rail][0]
+        del fence[rail][0]
+        rail+=direction
+        if rail == rails or rail == -1:
+            direction *= -1
+            rail += 2 * direction
+    return decrypted_text
+
+# Example usage:
+plaintext = "Hello, World!"
+rails = 3
+encrypted_text = rail_fence_encrypt(plaintext, rails)
+print("Encrypted text:", encrypted_text)
+decrypted_text = rail_fence_decrypt(encrypted_text, rails)
+print("Decrypted text:", decrypted_text)
+
+
+
+3.Playfair Cipher:
+def generate_key_matrix(key):
+  """
+  Generates a 5x5 key matrix from the given key.
+  """
+  key = key.upper().replace("J", "I").replace(" ", "")
+  alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+  matrix = []
+  for char in key:
+    if char not in matrix:
+      matrix.append(char)
+  for char in alphabet:
+    if char not in matrix:
+      matrix.append(char)
+  return [matrix[i:i+5] for i in range(0, len(matrix), 5)]
+
+def find_index(char, matrix):
+  """
+  Finds the row and column index of a character in the key matrix.
+  """
+  for i, row in enumerate(matrix):
+    for j, col in enumerate(row):
+      if col == char:
+        return i, j
+
+def encrypt(message, key):
+  """
+  Encrypts the message using the Playfair cipher.
+  """
+  matrix = generate_key_matrix(key)
+  ciphertext = ""
+  message = message.upper().replace("J", "I").replace(" ", "")
+  for i in range(0, len(message), 2):
+    if i < len(message) - 1 and message[i] == message[i+1]:
+      message = message[:i+1] + 'X' + message[i+1:]
+  for i in range(0, len(message), 2):
+    a1, b1 = find_index(message[i], matrix)
+    a2, b2 = find_index(message[i+1], matrix)
+    if a1 == a2:
+      ciphertext += matrix[a1][(b1 + 1) % 5] + matrix[a1][(b2 + 1) % 5]
+    elif b1 == b2:
+      ciphertext += matrix[(a1 + 1) % 5][b1] + matrix[(a2 + 1) % 5][b2]
+    else:
+      ciphertext += matrix[a1][b2] + matrix[a2][b1]
+  return ciphertext
+
+def decrypt(ciphertext, key):
+  """
+  Decrypts the ciphertext using the Playfair cipher.
+  """
+  matrix = generate_key_matrix(key)
+  message = ""
+  for i in range(0, len(ciphertext), 2):
+    a1, b1 = find_index(ciphertext[i], matrix)
+    a2, b2 = find_index(ciphertext[i+1], matrix)
+    if a1 == a2:
+      message += matrix[a1][(b1 - 1) % 5] + matrix[a1][(b2 - 1) % 5]
+    elif b1 == b2:
+      message += matrix[(a1 - 1) % 5][b1] + matrix[(a2 - 1) % 5][b2]
+    else:
+      message += matrix[a1][b2] + matrix[a2][b1]
+  return message.replace("X", "")
+
+# Example usage
+key = "MONARCHY"
+message = "MEET ME AT THE PARK TOMORROW NIGHT"
+ciphertext = encrypt(message, key)
+print("Encrypted message:", ciphertext)
+
+decrypted_message = decrypt(ciphertext, key)
+print("Decrypted message:", decrypted_message)
+
+
+4.Vigenere Cipher:
+def vigenere_encrypt(plain_text, key):
+    key = key.upper()
+    key_index = 0
+    encrypted_text = ''
+    for char in plain_text:
+        if char.isalpha():
+            shift = ord(key[key_index % len(key)]) - ord('A')
+            if char.islower():
+                encrypted_text += chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
+            elif char.isupper():
+                encrypted_text += chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+            key_index += 1
+        else:
+            encrypted_text += char
+    return encrypted_text
+
+def vigenere_decrypt(encrypted_text, key):
+    key = key.upper()
+    key_index = 0
+    decrypted_text = ''
+    for char in encrypted_text:
+        if char.isalpha():
+            shift = ord(key[key_index % len(key)]) - ord('A')
+            if char.islower():
+                decrypted_text += chr((ord(char) - ord('a') - shift + 26) % 26 + ord('a'))
+            elif char.isupper():
+                decrypted_text += chr((ord(char) - ord('A') - shift + 26) % 26 + ord('A'))
+            key_index += 1
+        else:
+            decrypted_text += char
+    return decrypted_text
+
+# Example usage:
+plaintext = "Hello, World!"
+key = "KEY"
+encrypted_text = vigenere_encrypt(plaintext, key)
+print("Encrypted text:", encrypted_text)
+decrypted_text = vigenere_decrypt(encrypted_text, key)
+print("Decrypted text:", decrypted_text)
+
+
+
+5.Hill Cipher:
+def generate_key_matrix(key):
+    key = key.replace(" ", "").upper()
+    key_len = len(key)
+    matrix_dim = int(key_len ** 0.5)
+    if matrix_dim ** 2 != key_len:
+        raise ValueError("Key length is not a perfect square")
+
+    key_matrix = [[0] * matrix_dim for _ in range(matrix_dim)]
+    for i in range(matrix_dim):
+        for j in range(matrix_dim):
+            key_matrix[i][j] = ord(key[i * matrix_dim + j]) - 65
+
+    return key_matrix
+
+def determinant(matrix):
+    if len(matrix) == 1:
+        return matrix[0][0]
+    elif len(matrix) == 2:
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+    else:
+        det = 0
+        for i in range(len(matrix)):
+            det += ((-1) ** i) * matrix[0][i] * determinant(
+                [row[:i] + row[i + 1:] for row in matrix[1:]]
+            )
+        return det
+
+def mod_inverse(num, mod):
+    for i in range(1, mod):
+        if (num * i) % mod == 1:
+            return i
+    raise ValueError(f"No modular inverse for {num} mod {mod}")
+
+def inverse_matrix(matrix, mod):
+    det = determinant(matrix)
+    det_inv = mod_inverse(det, mod)
+
+    if len(matrix) == 1:
+        return [[det_inv % mod]]
+    adjugate = []
+    for i in range(len(matrix)):
+        adj_row = []
+        for j in range(len(matrix)):
+            minor = [row[:j] + row[j + 1:] for row in matrix[:i] + matrix[i + 1:]]
+            adj_row.append(((-1) ** (i + j)) * determinant(minor))
+        adjugate.append(adj_row)
+    inverse = [[(num * det_inv) % mod for num in row] for row in adjugate]
+    return inverse
+
+def encrypt(plaintext, key):
+    plaintext = plaintext.replace(" ", "").upper()
+    plaintext_len = len(plaintext)
+    key_matrix = generate_key_matrix(key)
+
+    matrix_dim = len(key_matrix)
+    if plaintext_len % matrix_dim != 0:
+        padding = matrix_dim - (plaintext_len % matrix_dim)
+        plaintext += "X" * padding
+        plaintext_len += padding
+
+    ciphertext = ""
+    for i in range(0, plaintext_len, matrix_dim):
+        block = [ord(char) - 65 for char in plaintext[i:i+matrix_dim]]
+        encrypted_block = [sum(key_matrix[i][j] * block[j] for j in range(matrix_dim)) % 26 for i in range(matrix_dim)]
+        ciphertext += ''.join([chr(num + 65) for num in encrypted_block])
+
+    return ciphertext
+
+def decrypt(ciphertext, key):
+    ciphertext = ciphertext.replace(" ", "").upper()
+    ciphertext_len = len(ciphertext)
+    key_matrix = generate_key_matrix(key)
+
+    matrix_dim = len(key_matrix)
+    if ciphertext_len % matrix_dim != 0:
+        raise ValueError("Ciphertext length is not divisible by key matrix dimension")
+
+    plaintext = ""
+    inv_key_matrix = inverse_matrix(key_matrix, 26)
+    for i in range(0, ciphertext_len, matrix_dim):
+        block = [ord(char) - 65 for char in ciphertext[i:i+matrix_dim]]
+        decrypted_block = [sum(inv_key_matrix[i][j] * block[j] for j in range(matrix_dim)) % 26 for i in range(matrix_dim)]
+        plaintext += ''.join([chr(num + 65) for num in decrypted_block])
+
+    return plaintext
+
+# Example usage:
+key = "GYBNQKURP"
+plaintext = "HELLO"
+ciphertext = encrypt(plaintext, key)
+print("Encrypted:", ciphertext)
+decrypted_text = decrypt(ciphertext, key)
+print("Decrypted:", decrypted_text)
+
+
+
+6.Diffie-Hellman Key Exchange:
+def mod_exp(base, exp, mod):
+    result = 1
+    base = base % mod
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        exp = exp >> 1
+        base = (base * base) % mod
+    return result
+
+def diffie_hellman(prime, primitive_root, private_key):
+    public_key = mod_exp(primitive_root, private_key, prime)
+    return public_key
+
+def shared_secret_key(prime, public_key, private_key):
+    secret_key = mod_exp(public_key, private_key, prime)
+    return secret_key
+
+# Example usage:
+prime = 23
+primitive_root = 5
+alice_private_key = 6
+bob_private_key = 15
+
+alice_public_key = diffie_hellman(prime, primitive_root, alice_private_key)
+bob_public_key = diffie_hellman(prime, primitive_root, bob_private_key)
+
+alice_shared_secret = shared_secret_key(prime, bob_public_key, alice_private_key)
+bob_shared_secret = shared_secret_key(prime, alice_public_key, bob_private_key)
+
+print("Alice's public key:", alice_public_key)
+print("Bob's public key:", bob_public_key)
+print("Alice's shared secret key:", alice_shared_secret)
+print("Bob's shared secret key:", bob_shared_secret)
