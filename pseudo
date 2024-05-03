@@ -1,0 +1,79 @@
+
+Caesar Cipher algorithm:
+1. Input: Take the plaintext message and the desired shift amount as input.
+2. Encryption Process:
+• Iterate through each character in the plaintext message.
+• For each alphabetical character:
+·
+• If it's uppercase, shift it by the specified amount (mod 26) while maintaining its case.
+• If it's lowercase, shift it by the specified amount (mod 26) while maintaining its case.
+Non-alphabetical characters remain unchanged.
+• Assemble the encrypted ciphertext.
+3. Output: Return the encrypted ciphertext.
+
+
+Rail Fence Cipher algorithm:
+1. Input: Take the plaintext message and the desired number of rails (rows) as input. 2. Encryption Process:
+• Create a grid with the specified number of rails (rows) and the length of the plaintext message as columns.
+• Place each character of the plaintext message diagonally across the grid, moving up and down based on the rail number.
+• Read the characters row by row to generate the ciphertext.
+3. Output: Return the encrypted ciphertext.
+
+
+Vigenère Cipher algorithm:
+1. Key Generation:
+• Choose a keyword or key phrase.
+• Repeat the keyword to match the length of the plaintext message.
+• Convert both the plaintext and the repeated keyword to uppercase.
+2. Encryption Process:
+• Convert each letter of the plaintext message and the corresponding letter of the keyword to their numerical equivalents (A=0, B=1, ..., Z=25).
+• Add the numerical values of the plaintext and keyword letters together (mod 26) to get the encrypted letter.
+• Convert the encrypted numerical value back to a letter.
+3. Output: Return the encrypted ciphertext.
+
+Diffie-Hellman key exchange algorithm:
+1. Initialization:
+•
+Both parties agree on a large prime number, `p`, and a primitive root modulo `p`, `g`. • Each party chooses a secret integer:
+•
+Party A chooses `a`, computes `A = g^a mod p`, and sends `A` to Party B.
+· Party B chooses `b`, computes `B = g^b mod p`, and sends `B` to Party A.
+2. Key Calculation:
+• Party A receives `B` from Party B and computes the shared secret key as `K = B^a mod p`.
+·
+Party B receives `A` from Party A and computes the shared secret key as `K = A^b mod p`.
+• Both parties now have the same shared secret key, `K`.
+3. Output: Use the shared secret key `K` for secure communication.
+
+
+Hill Cipher algorithm:
+1. Key Generation:
+• Choose a key matrix that is invertible (i.e., its determinant must be relatively prime to 26).
+• Determine the size of the key matrix based on the desired block size for encryption.
+• Calculate the inverse of the key matrix modulo 26.
+2. Encryption Process:
+• Break the plaintext into blocks of size corresponding to the key matrix.
+Convert each block of plaintext letters to numerical equivalents (A=0, B=1,..., Z=25).
+• Multiply each block by the key matrix modulo 26.
+• Convert the resulting numerical values back to letters.
+3. Output: Return the encrypted ciphertext.
+
+
+
+Playfair Cipher algorithm:
+1. Key Generation:
+• Start with a keyword or key phrase.
+• Remove any duplicate letters from the keyword and append the remaining letters of the
+alphabet (excluding J) in order to form a 5×5 key square or matrix.
+• Fill in the key square row by row, avoiding repeating letters.
+2. Encryption Process:
+•
+Break the plaintext into pairs of letters (digraphs).
+• For each digraph:
+If the two letters are the same, insert a filler letter (usually 'X') between them.
+• If the two letters are in the same row of the key square, replace them with the letters to their immediate right, wrapping around if needed.
+• If the two letters are in the same column of the key square, replace them with the letters directly below, wrapping around if needed.
+• If the two letters form a rectangle in the key square, replace them with the letters in the same row but in the column of the other letter of the pair.
+• If the two letters are not in the same row, column, or rectangle, replace them with the letters that form a rectangle with the other letters of the pair.
+• Assemble the encrypted ciphertext.
+3. Output: Return the encrypted ciphertext.
